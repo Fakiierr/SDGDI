@@ -9,38 +9,56 @@ Eliminar producto
 Salir
 """
 opcion=0
-nombreProductos=[]
-precioProductos=[]
-stockProductos=[]
+ListaProductos=[]
+#producto={"nombre":nombre,""}
 
-def agregarProducto():
+def SolicitarProducto():
     nombreProd= input("Ingrese el nombre del nuevo producto: ")
     try:
-        precioProd= int(input("Ingrese el precio del nuevo producto: "))
         stockProd= int(input("Ingrese el stock del nuevo producto: "))
+        precioProd= int(input("Ingrese el precio del nuevo producto: "))
         if precioProd<0 or stockProd<0:
             raise ValueError
         else:
-            nombreProductos.append(nombreProd)
-            precioProductos.append(precioProd)
-            stockProductos.append(stockProd)
+            return[nombreProd,stockProd,precioProd]
+        
     except ValueError:
         print("Debe ingresar valores númericos positivos")
 
 def buscarProducto(nombre):
-    try:
-        indice=nombreProductos.index(nombre)
-        nombreProd=nombreProductos[indice]
-        precioProd=precioProductos[indice]
-        stockProd=stockProductos[indice]
-        
-        producto=[nombreProd,precioProd,stockProd]
-        return producto
 
-    except ValueError:
-        print("No se encontró el producto")
+    for producto in ListaProductos:
+        if producto["nombre"].lower()==nombre.lower():
+            return producto
+    
+    return None
 
+def guardarProducto(nombre,stock,precio):
 
+    if buscarProducto(nombre)==None:
+        producto={"nombre":nombre,"cantidad":stock,"precio":precio}
+        ListaProductos.append(producto)
+        print("Producto guardado con éxito")
+    else:
+        print("Ya existe un producto con ese nombre")
+
+def actualizarProducto(nombre,NuevoStock,NuevoPrecio):
+    productoBuscado=buscarProducto(nombre)
+    if productoBuscado!=None:
+        indice= ListaProductos.index(productoBuscado)
+        productoBuscado["cantidad"]=NuevoStock
+        productoBuscado["precio"]=NuevoPrecio
+        ListaProductos[indice]=productoBuscado
+        print(f"El producto {nombre} fué actualizado correctamente")
+    else:
+        print("El producto que desea actualizar no existe")
+
+def mostrarInventarioCompleto():
+    if len(ListaProductos)==0:
+        print("No hay productos aún")
+    else: 
+        for producto in ListaProductos:
+            print(f"{producto["nombre"]} \t\t Stock: ${producto["cantidad"]} \t\t Precio: {producto["precio"]}")
 
 while opcion!="6":
     print("**************Menu de gestión de inventario**************")
@@ -55,10 +73,22 @@ while opcion!="6":
 
     match opcion:
         case "1":
-            agregarProducto()
+            infoProducto=SolicitarProducto()
+            if infoProducto!=None:
+                guardarProducto(infoProducto[0],infoProducto[1],infoProducto[2])
         case "2":
-            nombre=input("Ingrese el nombre del producto a buscar: ")
+            nombre=input("Ingrese el nombre del producto a actualizar: ")
             productoEncontrado=buscarProducto(nombre)
             if productoEncontrado!=None:
-                print(f"Nombre: {productoEncontrado[0]} \t\t Precio: ${productoEncontrado[1]} \t\t Stock: {productoEncontrado[2]}")
-            
+                print("-"*60)
+                print(f"Nombre: {productoEncontrado["nombre"]} \t\t Stock: ${productoEncontrado["cantidad"]} \t\t Precio: {productoEncontrado["precio"]}")
+                print("-"*60)
+        case "3":
+            infoProducto=SolicitarProducto()
+            if infoProducto!= None:
+                actualizarProducto(infoProducto[0],infoProducto[1],infoProducto[2])
+        case "4":
+            mostrarInventarioCompleto()
+
+       
+
