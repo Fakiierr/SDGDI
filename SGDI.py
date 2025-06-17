@@ -9,10 +9,18 @@ Busqueda de diccionarios dentro de listas [x]
 opcion=0
 
 lista_productos=[]
-#+producto={"nombre":nombre,"cantidad":stock,"precio":precio}
+#producto={"nombre":nombre,"cantidad":stock,"precio":precio,"codigo":codigo}
 
 def soliciatProducto():
     nombreProd= input("Ingrese el nombre del nuevo producto: ")
+    while True:
+        codigo=input("Ingrese el codigo del nuevo producto")
+
+        if validarCodigo(codigo)==True:
+            print("Codigo ingresado correctamente")
+            break
+        else:
+            print("Codigo incorrecto. Intentelo nuevamente")
     try:
         precioProd= int(input("Ingrese el precio del nuevo producto: "))
         stockProd= int(input("Ingrese el stock del nuevo producto: "))
@@ -73,6 +81,39 @@ def eliminarProducto(nombre):
     else:
         print("No existe un producto con ese nombre")
 
+def contadorDeMayus(codigo):
+    contador_Mayuscula=0
+    for letra in str(codigo):
+        if letra.isupper():
+            contador_Mayuscula+=1
+
+    return contador_Mayuscula
+
+def contadorDeNumeros(codigo):
+    contadorNum=0
+    for letra in str(codigo):
+        if letra.isnumeric():
+            contadorNum+=1
+    
+    return contadorNum
+
+def validarCodigo(codigo):
+
+    if contadorDeMayus(codigo)<2:
+        print("*El codigo debe tener al menos dos mayusculas*")
+        return False
+    elif contadorDeNumeros(codigo)==0:
+        print("*El codigo debe tener al menos un numero*")
+        return False
+    elif len(codigo)<5:
+        print("*El codigo debe tener al menos cinco caracteres*")
+        return False
+    else:
+        return True
+
+
+
+
 while opcion!="6":
     print("**************Menu de gestión de inventario**************")
     print("1.- Agregar producto")
@@ -110,7 +151,9 @@ while opcion!="6":
                 actualizarProducto(nombre=infoProducto[0],nuevoStock=infoProducto[2],nuevoPrecio=infoProducto[1])
 
         case "4":
+            print("-"*65)
             mostrarInventarioCompleto()
+            print("-"*65)
         
         case "5":
             nombre=input("Ingrese el nombre del producto a eliminar: ")
